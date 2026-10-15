@@ -1,0 +1,27 @@
+name: 주간 장비 점검 알림
+
+on:
+  schedule:
+    # 매주 수요일 17:00 KST (= 08:00 UTC)
+    - cron: '0 8 * * 3'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '발송하지 않고 결과만 확인'
+        type: boolean
+        default: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/notify.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '' }}
