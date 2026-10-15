@@ -1,0 +1,11 @@
+{
+  "name": "equipment-check-notifier",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "notify": "node scripts/notify.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}
