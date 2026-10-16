@@ -6,13 +6,7 @@
 */
 import admin from 'firebase-admin';
 
-const EQUIPMENT = [
-  ...Array.from({ length: 6 }, (_, i) => `HPLC #${i + 1}`),
-  'Prep HPLC', 'LC-MS',
-  'GC #1', 'GC #2', 'GC-MS',
-  'Moisture meter', 'Oven Karl Fischer', 'Karl Fischer (Volumetric)',
-  'Balance (Oven KF)', 'Analytical balance', '초순수제조기',
-].map((name, i) => ({ id: 'eq' + String(i + 1).padStart(2, '0'), name }));
+import { EQUIPMENT } from './equipment.mjs';
 
 /* 사이트와 동일한 ISO 주차 (월요일 시작), 한국 시간 기준 */
 function weekKeyKST(now = new Date()) {
