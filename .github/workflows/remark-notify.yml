@@ -1,0 +1,31 @@
+name: 장비 특이사항 알림
+
+on:
+  schedule:
+    # 15분마다, 평일 09:00~20:00 KST (= 00:00~10:59 UTC, 월~금)
+    - cron: '*/15 0-10 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '발송하지 않고 결과만 확인'
+        type: boolean
+        default: true
+
+concurrency:
+  group: remark-notify
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/notify-remarks.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '' }}
